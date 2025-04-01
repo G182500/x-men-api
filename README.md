@@ -26,7 +26,7 @@ A principal diferença entre **Docker** e uma **Máquina Virtual**, é que os co
 
 **Sem o arquivo:**
 
-* Build da **imagem** do container: **docker build --tag nome-do-container .**, sendo 'ponto final' o caminho do diretório atual, onde deve estar o Dockerfile
+* **Build da imagem** do container: **docker build --tag nome-do-container .** (sendo 'ponto final' o caminho do diretório atual, onde deve estar o Dockerfile)
 * Executar com **docker run -p 3000:3000 nome-container** (Porta do seu computador (host) : Porta do container Docker)
 
 # 📋 Comandos Úteis
