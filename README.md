@@ -16,7 +16,7 @@ A principal diferença entre **Docker** e uma **Máquina Virtual**, é que os co
 
 É fácil gerenciar containers com a ajuda da API do Docker ou da interface de linha de comando (ILC).
 
-# 📦 Criando e Gerenciando Containers
+# 📦 Criando Containers
 
 **Usando Docker Compose, ou seja, um arquivo docker-compose.yml:**
 
@@ -36,7 +36,7 @@ A principal diferença entre **Docker** e uma **Máquina Virtual**, é que os co
 * **docker images** mostra todas imagens
 * **docker ps -a** lista todos os containers, enquanto sem **-a** mostrará somente os em execução
 
-**Container:**
+**Gerenciando um Container:**
 
 * Parar com **docker stop <nome-container>**
 * Iniciar com **docker start <nome-container>**
