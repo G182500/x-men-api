@@ -26,8 +26,8 @@ A principal diferença entre **Docker** e uma **Máquina Virtual**, é que os co
 
 **Sem o arquivo:**
 
-* Build da **imagem** do container: **docker build --tag <nome-do-container> .**, sendo 'ponto final' o caminho do diretório atual, onde deve estar o Dockerfile
-* Executar com **docker run -p 3000:3000 <nome-container>** (Porta do seu computador (host) : Porta do container Docker)
+* Build da **imagem** do container: **docker build --tag nome-do-container .**, sendo 'ponto final' o caminho do diretório atual, onde deve estar o Dockerfile
+* Executar com **docker run -p 3000:3000 nome-container** (Porta do seu computador (host) : Porta do container Docker)
 
 # 📋 Comandos Úteis
 
@@ -38,11 +38,11 @@ A principal diferença entre **Docker** e uma **Máquina Virtual**, é que os co
 
 **Gerenciando um Container:**
 
-* Parar com **docker stop <nome-container>**
-* Iniciar com **docker start <nome-container>**
-* Reinicialização com **docker restart <nome-container>**
+* Parar com **docker stop nome-container**
+* Iniciar com **docker start nome-container**
+* Reinicialização com **docker restart nome-container**
 
 **Deletar:**
 
-* Com o container parado, podemos excluir usando seu ID ou nome, através de **docker rm <id-container>**
-* Remover uma imagem é possível com **docker rmi <id-imagem>**, ou usando seu nome 
+* Com o container parado, podemos excluir usando seu nome, através de **docker rm nome-container**
+* Remover uma imagem é possível com **docker rmi nome-imagem**
