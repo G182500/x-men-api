@@ -9,6 +9,9 @@ const db = mysql.createPool({
   database: process.env.DB_NAME
 });
 
+/* Pool (de conexões) é uma técnica para evitar o constante "abre-fecha" de conexões para acessar um BD, mantendo um determinado número delas sempre abertas,
+e simplesmente resusá-las quando necessário, dessa forma você diminui tanto o gasto de recursos da máquina, quanto o tempo de resposta da sua aplicação */
+
 const { checkEmail } = require('../utils/check-email.js');
 const { checkPassword } = require('../utils/bcrypt.js');
 const { generateToken } = require('../utils/jwt.js');
