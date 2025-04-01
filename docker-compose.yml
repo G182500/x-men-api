@@ -1,0 +1,38 @@
+# Container para a API (3000:3000)
+# Container para o BD (3306:3306)
+
+version: "3.8"
+
+services:
+  db:
+    image: mysql:latest
+    container_name: my-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: xmen
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ALLOW_PUBLIC_KEY_RETRIEVAL: "true"
+    ports:
+      - "3307:3306" # porta host : porta docker
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  api:
+    build: . # A partir do dockerfile
+    container_name: xmen-api
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: xmen
+    volumes:
+      - .:/app # Mudanças no código serão refletidas automaticamente
+
+volumes:
+  mysql_data:
