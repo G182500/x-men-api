@@ -1,5 +1,6 @@
 # Container para a API (3000:3000)
-# Container para o BD (3306:3306)
+# Container para o BD (3307:3306)
+# porta host : porta docker
 
 version: "3.8"
 
@@ -15,7 +16,7 @@ services:
       MYSQL_PASSWORD: password
       MYSQL_ALLOW_PUBLIC_KEY_RETRIEVAL: "true"
     ports:
-      - "3307:3306" # porta host : porta docker
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
