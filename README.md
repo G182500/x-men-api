@@ -16,7 +16,7 @@ A principal diferença entre **Docker** e uma **Máquina Virtual**, é que os co
 
 É fácil gerenciar containers com a ajuda da API do Docker ou da interface de linha de comando (ILC).
 
-# 📦 Criando Containers
+# 📦 Criando Container
 
 **Usando Docker Compose, ou seja, um arquivo docker-compose.yml:**
 
@@ -41,8 +41,26 @@ A principal diferença entre **Docker** e uma **Máquina Virtual**, é que os co
 * Parar com **docker stop nome-container**
 * Iniciar com **docker start nome-container**
 * Reinicialização com **docker restart nome-container**
+* Entrar em um container via terminal com **docker exec -it nome-container bash**
 
 **Deletar:**
 
 * Com o container parado, podemos excluir usando seu nome, através de **docker rm nome-container**
 * Remover uma imagem é possível com **docker rmi nome-imagem**
+
+# 💾 MySQL dentro do Container
+
+Com o container em execução, entre no MySQL com **docker exec -it nome-container mysql -u root -p**. Lembrando que **-p** (password) deve ser correspondente ao **-u** (user) digitado. Nesse exemplo, o usuário é **root**, então deve-se usar o **root password** informado no **dockerfile**
+
+* Mostrar bancos de dados com **SHOW DATABASES;**
+* Sair do MySQL com **EXIT;**
+* Criar banco de dados com
+  
+    **CREATE DATABASE nome-bd;**
+  
+    **GRANT ALL PRIVILEGES ON nome-bd.\* TO 'root'@'%' IDENTIFIED BY 'sua_senha';**
+
+    **FLUSH PRIVILEGES;**
+
+# 📥 Restaurar DUMP dentro do container
+Se tiver um arquivo backup **.sql** e quiser restaurá-lo, use **docker cp caminho/do/seu/backup.sql nome-container:/backup.sql** para copiá-lo, depois entre no container e rode **mysql -u root -p nome-bd < /backup.sql**
