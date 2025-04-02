@@ -62,5 +62,5 @@ Com o container em execução, entre no MySQL com **docker exec -it nome-contain
 
     **FLUSH PRIVILEGES;**
 
-# 📥 Restaurar DUMP dentro do container
+# 📥 Restaurar DUMP dentro do Container
 Se tiver um arquivo backup **.sql** e quiser restaurá-lo, use **docker cp caminho/do/seu/backup.sql nome-container:/backup.sql** para copiá-lo, depois entre no container e rode **mysql -u root -p nome-bd < /backup.sql**
