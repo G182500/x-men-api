@@ -8,19 +8,23 @@ const app = exp();
 app.use(exp.json()); // access the body request
 
 app.listen(PORT, () => {
-  // Acessar logs com 'docker logs <nome-container>'
+  // Acessar logs 'docker logs <nome-container>'
   console.log(`Servidor X-MEN rodando na porta: ${PORT}`);
 });
 
-const { login, createUser } = require('./user/controller.js');
+const { login, createUser, getUser } = require('./user/controller.js');
+const { getMutant } = require('./mutant/controller.js');
 
 app.post('/login', login);
+
+/* Autenticação utilizando um Token no formato JWT, que virá no cabeçalho das requisições.
+Este tipo de autenticação, é chamado de Bearer Authentication. Enquanto JWT define o tipo do formato do Token, Bearer define como o Token é trafegado.
+Para utilizar este padrão, basta definir um item no cabeçalho da requisição, chamado de 'Authorization' e que contenha a string 'Bearer SEU_TOKEN' */
+
+app.get('/user', getUser);
 app.post('/user', createUser);
 
-const { getAllMutants, getMutantById } = require('./mutant/controller.js');
-
-app.get('/mutant/:id', getMutantById);
-app.get('/mutant', getAllMutants);
+app.get('/mutant', getMutant);
 
 /*
 app.post('/user', async (req, res) => {

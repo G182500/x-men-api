@@ -1,4 +1,4 @@
-const getAllMutants = async (req, res) => {
+const getMutant = async (req, res) => {
   res.status(200).json({ data: [
     {
       "id": 1,
@@ -31,16 +31,4 @@ const getAllMutants = async (req, res) => {
   ]});
 };
 
-const getMutantById = async (req, res) => {
-  res.status(200).json({ data: [
-    {
-      "id": 1,
-      "name": "Wolverine",
-      "abilities": ["Regeneration", "Adamantium Claws", "Enhanced Senses"],
-      "category": "Omega Level",
-      "side": "good"
-    }
-  ]});
-};
-
-module.exports = { getAllMutants, getMutantById };
+module.exports = { getMutant };
