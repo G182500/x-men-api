@@ -8,8 +8,7 @@ const app = exp();
 app.use(exp.json()); // access the body request
 
 app.listen(PORT, () => {
-  // Acessar logs 'docker logs <nome-container>'
-  console.log(`Servidor X-MEN rodando na porta: ${PORT}`);
+  console.log(`Servidor X-MEN rodando na porta: ${PORT}`); // acessar logs 'docker logs <nome-container>'
 });
 
 const { login, createUser, getUser } = require('./user/controller.js');
