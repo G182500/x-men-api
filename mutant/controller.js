@@ -18,14 +18,15 @@ const createMutant = async (req, res) => {
   return res.status(status).json({ message }); 
 };
 
+const updateMutant = async (req, res) => {
+  const token = req.header('Authorization');
+  const updatedData = req.body;
+
+  const { status, message } = await mutantService.updateMutant(token, updatedData);
+  return res.status(status).json({ message }); 
+};
+
 /*
-    {
-      "id": 3,
-      "name": "Jean Grey",
-      "abilities": ["Telepathy", "Telekinesis", "Phoenix Force"],
-      "category": "Omega Level",
-      "side": "good"
-    },
     {
       "id": 4,
       "name": "Professor X",
@@ -35,4 +36,4 @@ const createMutant = async (req, res) => {
     }
 */
 
-module.exports = { getMutant, createMutant };
+module.exports = { getMutant, createMutant, updateMutant };

@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const { knex } = require('../utils/knex.js');
 const { validateToken } = require('../utils/jwt.js');
 
@@ -65,13 +63,47 @@ const createMutant = async (token, data) => {
       return newMutantId;
     });
 
-    console.log('id', id);
-
-    return { status: 200, message: 'mutant created' };
+    return { status: 200, message: `mutant ${id} created` };
   } catch(err) {
     console.error(err);
     return { message: 'server error', status: 500 };      
   }
 };
 
-module.exports = { getMutant, createMutant };
+const updateMutant = async (token, updatedData) => {
+  try {
+    const { message, status, tokenData } = validateToken(token);
+    if (!tokenData) return { message, status };
+
+    const { id, name, category, side, abilities } = updatedData;
+
+    if (!id || !name || !category || !side || !abilities?.length) {
+      return { message: 'missing params', status: 400 };
+    }
+
+    await knex.transaction(async trx => {
+      await trx('mutant')
+        .where({ id })
+        .update({ name, category, side });
+
+      // Remove habilidades antigas
+      await trx('mutant_ability')
+        .where({ mutant_id: id })
+        .del();
+
+      const mutantRelationship = abilities.map(abilityId => ({
+        mutant_id: id,
+        ability_id: abilityId
+      }));
+
+      await trx('mutant_ability').insert(mutantRelationship);
+    });
+
+    return { status: 200, message: `mutant ${name} updated` };
+  } catch (err) {
+    console.error(err);
+    return { message: 'server error', status: 500 };
+  }
+};
+
+module.exports = { getMutant, createMutant, updateMutant };

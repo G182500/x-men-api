@@ -12,7 +12,7 @@ app.listen(PORT, () => {
 });
 
 const { login, createUser, getUser } = require('./user/controller.js');
-const { getMutant, createMutant } = require('./mutant/controller.js');
+const { getMutant, createMutant, updateMutant } = require('./mutant/controller.js');
 
 app.post('/login', login);
 
@@ -25,6 +25,7 @@ app.post('/user', createUser);
 
 app.get('/mutant', getMutant);
 app.post('/mutant', createMutant);
+app.put('/mutant', updateMutant);
 
 // const hashedPassword = await bcrypt.hash(password, 10); 
 /* Salt rounds é uma camada de proteção, onde cada round deixa o hash mais forte. Quanto mais rounds, mais seguro e mais demorado.
