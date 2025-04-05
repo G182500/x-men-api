@@ -14,7 +14,7 @@ const db = mysql.createPool({
 e simplesmente resusá-las quando necessário, dessa forma você diminui tanto o gasto de recursos da máquina, quanto o tempo de resposta da sua aplicação */
 
 const { checkPassword } = require('../utils/bcrypt.js');
-const { generateToken } = require('../utils/jwt.js');
+const { generateToken, validateToken } = require('../utils/jwt.js');
 
 const login = async (email, password) => {
   try {
@@ -42,8 +42,8 @@ const login = async (email, password) => {
 
 const getUser = async (token, id, name, email) => {
   try {
-    // TODO: token verification
-    console.log(token);
+    const { message, status, tokenData } = validateToken(token);
+    if (!tokenData) return { message, status };
 
     const query = knex('users').select('*');
 

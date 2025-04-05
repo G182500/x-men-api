@@ -12,12 +12,10 @@ const login = async (req, res) => {
 
 const getUser = async (req, res) => {
   const token = req.header('Authorization');
-  if (!token) return res.status(400).json({ message: 'token is missing' });
-
   const { id, name, email } = req.query; // 'user/1' -> req.params | 'user?id=1' -> req.query
   
-  const { data, status } = await userService.getUser(token, id, name, email);
-  if (!data) res.status(status).json({ message: 'server error' });
+  const { data, status, message } = await userService.getUser(token, id, name, email);
+  if (!data) return res.status(status).json({ message });
 
   return res.status(status).json({ data });
 };
