@@ -1,19 +1,16 @@
+const mutantService = require('./service');
+
 const getMutant = async (req, res) => {
-  res.status(200).json({ data: [
-    {
-      "id": 1,
-      "name": "Wolverine",
-      "abilities": ["Regeneration", "Adamantium Claws", "Enhanced Senses"],
-      "category": "Omega Level",
-      "side": "good"
-    },
-    {
-      "id": 2,
-      "name": "Magneto",
-      "abilities": ["Metal Manipulation", "Magnetic Field", "Flight"],
-      "category": "Alpha Level",
-      "side": "evil"
-    },
+  const token = req.header('Authorization');
+  const params = req.query; // 'user/1' -> req.params | 'user?id=1' -> req.query
+
+  const { data, status, message } = await mutantService.getMutant(token, params);
+  if (!data) return res.status(status).json({ message });
+
+  return res.status(status).json({ data });
+};
+
+/*
     {
       "id": 3,
       "name": "Jean Grey",
@@ -28,7 +25,6 @@ const getMutant = async (req, res) => {
       "category": "Alpha Level",
       "side": "good"
     }
-  ]});
-};
+*/
 
 module.exports = { getMutant };

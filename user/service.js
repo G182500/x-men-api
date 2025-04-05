@@ -18,7 +18,7 @@ const { generateToken, validateToken } = require('../utils/jwt.js');
 
 const login = async (email, password) => {
   try {
-    const query = knex('users')
+    const query = knex('user')
       .select('*')
       .where({ email })
       .toString();
@@ -40,16 +40,20 @@ const login = async (email, password) => {
   }
 };
 
-const getUser = async (token, id, name, email) => {
+const getUser = async (token, params) => {
   try {
     const { message, status, tokenData } = validateToken(token);
     if (!tokenData) return { message, status };
 
-    const query = knex('users').select('*');
+    const query = knex('user').select('*');
 
-    if (id) query.where({ id });
-    if (name) query.orWhere('username', 'like', `%${name.toUpperCase()}%`);
-    if (email) query.orWhere('email', 'like', `%${email}%`);
+    if (params){
+      const { id, name, email } = params;
+      
+      if (id) query.where({ id });
+      if (name) query.andWhere('username', 'like', `%${name.toUpperCase()}%`);
+      if (email) query.andWhere('email', 'like', `%${email}%`);
+    }
 
     const [rows] = await db.promise().query(query.toString());
     if (!rows.length) return { status: 404, data: [] };
