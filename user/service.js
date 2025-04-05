@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const mysql = require('mysql2');
+const knex = require('knex')({ client: 'mysql2' }); // SQL query builder
 
 const db = mysql.createPool({
   host: process.env.DB_HOST,
@@ -12,14 +13,20 @@ const db = mysql.createPool({
 /* Pool (de conexões) é uma técnica para evitar o constante "abre-fecha" de conexões para acessar um BD, mantendo um determinado número delas sempre abertas,
 e simplesmente resusá-las quando necessário, dessa forma você diminui tanto o gasto de recursos da máquina, quanto o tempo de resposta da sua aplicação */
 
-const { checkEmail } = require('../utils/check-email.js');
 const { checkPassword } = require('../utils/bcrypt.js');
 const { generateToken } = require('../utils/jwt.js');
 
 const login = async (email, password) => {
-  try {   
-    const user = await checkEmail(email, db);
-    if (!user) return { message: 'email invalid', status: 404 };
+  try {
+    const query = knex('users')
+      .select('*')
+      .where({ email })
+      .toString();
+
+    const [rows] = await db.promise().query(query);
+    if (!rows?.length) return { message: 'email invalid', status: 404 };
+
+    const user = rows[0];
 
     const passwordMatch = await checkPassword(password, user.password_hash);
     if (!passwordMatch) return { message: 'incorrect password', status: 401 }; // 401 -> Não autorizado
@@ -33,21 +40,29 @@ const login = async (email, password) => {
   }
 };
 
-const createUser = async (email, password) => {
-  /*try {   
-    const user = await checkEmail(email, db);
-    if (!user) return { message: 'email invalid', status: 404 };
+const getUser = async (token, id, name, email) => {
+  try {
+    // TODO: token verification
+    console.log(token);
 
-    const passwordMatch = await checkPassword(password, user.password_hash);
-    if (!passwordMatch) return { message: 'incorrect password', status: 401 }; // 401 -> Não autorizado
+    const query = knex('users').select('*');
 
-    const token = generateToken({ email }, '1d', String(user.id));      
-    return { message: 'logged in', status: 200, token };
-    
+    if (id) query.where({ id });
+    if (name) query.orWhere('username', 'like', `%${name.toUpperCase()}%`);
+    if (email) query.orWhere('email', 'like', `%${email}%`);
+
+    const [rows] = await db.promise().query(query.toString());
+    if (!rows.length) return { status: 400, data: [] };
+
+    return { status: 200, data: rows };
   } catch(err) {
     console.error(err);
     return { message: 'server error', status: 500 };      
-  }*/
+  }
 };
 
-module.exports = { login, createUser };
+const createUser = async (email, password) => {
+
+};
+
+module.exports = { login, getUser, createUser };

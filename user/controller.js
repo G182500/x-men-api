@@ -11,11 +11,15 @@ const login = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const { id, name, email } = req.query;
-  console.log(req.header);
-  //const { token, message, user } = await userService.login(email, password);
+  const token = req.header('Authorization');
+  if (!token) return res.status(400).json({ message: 'token is missing' });
 
-  return res.status(200).json({ message: 'aaa', data: {} });
+  const { id, name, email } = req.query; // 'user/1' -> req.params | 'user?id=1' -> req.query
+  
+  const { data, status } = await userService.getUser(token, id, name, email);
+  if (!data) res.status(status).json({ message: 'server error' });
+
+  return res.status(status).json({ data });
 };
 
 const createUser = async (req, res) => {
