@@ -7,7 +7,15 @@ const getMutant = async (req, res) => {
   const { data, status, message } = await mutantService.getMutant(token, params);
   if (!data) return res.status(status).json({ message });
 
-  return res.status(status).json({ data });
+  return res.status(status).json(data);
+};
+
+const createMutant = async (req, res) => {
+  const token = req.header('Authorization');
+  const newMutantData = req.body;
+
+  const { status, message } = await mutantService.createMutant(token, newMutantData);
+  return res.status(status).json({ message }); 
 };
 
 /*
@@ -27,4 +35,4 @@ const getMutant = async (req, res) => {
     }
 */
 
-module.exports = { getMutant };
+module.exports = { getMutant, createMutant };

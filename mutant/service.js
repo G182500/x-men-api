@@ -1,18 +1,6 @@
 require('dotenv').config();
 
-const mysql = require('mysql2');
-const knex = require('knex')({ client: 'mysql2' }); // SQL query builder
-
-const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
-});
-
-/* Pool (de conexões) é uma técnica para evitar o constante "abre-fecha" de conexões para acessar um BD, mantendo um determinado número delas sempre abertas,
-e simplesmente resusá-las quando necessário, dessa forma você diminui tanto o gasto de recursos da máquina, quanto o tempo de resposta da sua aplicação */
-
+const { knex } = require('../utils/knex.js');
 const { validateToken } = require('../utils/jwt.js');
 
 const getMutant = async (token, params) => {
@@ -45,7 +33,7 @@ const getMutant = async (token, params) => {
       }
     }
 
-    const [rows] = await db.promise().query(query.toString());
+    const rows = await query;
     if (!rows.length) return { status: 404, data: [] };
 
     return { status: 200, data: rows };
@@ -55,6 +43,35 @@ const getMutant = async (token, params) => {
   }
 };
 
-const createMutant = async (data) => {};
+const createMutant = async (token, data) => {
+  try {
+    const { message, status, tokenData } = validateToken(token);
+    if (!tokenData) return { message, status };
+
+    const { name, category, side, abilities } = data;
+    if (!name || !category || !side || !abilities?.length) return { message: 'missing params' , status: 400 }; // 400 -> Bad request
+
+    // transaction -> Se der erro no meio, ele desfaz tudo
+    const id = await knex.transaction(async trx => {
+      // Usa "trx" no lugar do "knex" dentro da transação
+      const [newMutantId] = await trx('mutant').insert({ name, category, side });
+
+      const mutantRelationship = abilities.map(abilityId => ({
+        mutant_id: newMutantId,
+        ability_id: abilityId
+      }));
+
+      await trx('mutant_ability').insert(mutantRelationship);
+      return newMutantId;
+    });
+
+    console.log('id', id);
+
+    return { status: 200, message: 'mutant created' };
+  } catch(err) {
+    console.error(err);
+    return { message: 'server error', status: 500 };      
+  }
+};
 
 module.exports = { getMutant, createMutant };

@@ -17,7 +17,7 @@ const getUser = async (req, res) => {
   // 'user/1' -> req.params | 'user?id=1' -> req.query
   if (!data) return res.status(status).json({ message });
 
-  return res.status(status).json({ data });
+  return res.status(status).json(data);
 };
 
 const createUser = async (req, res) => {};
