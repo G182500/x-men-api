@@ -52,7 +52,7 @@ const getUser = async (token, id, name, email) => {
     if (email) query.orWhere('email', 'like', `%${email}%`);
 
     const [rows] = await db.promise().query(query.toString());
-    if (!rows.length) return { status: 400, data: [] };
+    if (!rows.length) return { status: 404, data: [] };
 
     return { status: 200, data: rows };
   } catch(err) {
