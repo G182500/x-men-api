@@ -60,9 +60,7 @@ const createUser = async (token, data) => {
 
     if (!username || !email || !password) return { message: 'missing params' , status: 400 }; // 400 -> Bad request
 
-    const hashedPassword = await generateHashPass(password); 
-
-    console.log(hashedPassword);
+    const hashedPassword = await generateHashPass(password);
 
     const [newUserId] = await knex('user').insert({ username, email, password_hash: hashedPassword });
 
