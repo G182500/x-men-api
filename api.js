@@ -27,10 +27,6 @@ app.get('/mutant', getMutant);
 app.post('/mutant', createMutant);
 app.put('/mutant', updateMutant);
 
-// const hashedPassword = await bcrypt.hash(password, 10); 
-/* Salt rounds é uma camada de proteção, onde cada round deixa o hash mais forte. Quanto mais rounds, mais seguro e mais demorado.
-Menos rounds, mais rápido e mais arriscado. 10 é o padrão.
-
 app.get('/', async (req, res) => {
     res.send('<h1 style="color: green">🔥 Servidor dos X-MEN está rodando!</h1>');
-});*/
+});

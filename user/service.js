@@ -1,6 +1,6 @@
 const { knex } = require('../utils/knex.js');
 
-const { checkPassword } = require('../utils/bcrypt.js');
+const { checkPassword, generateHashPass } = require('../utils/bcrypt.js');
 const { generateToken, validateToken } = require('../utils/jwt.js');
 
 const login = async (email, password) => {
@@ -51,8 +51,26 @@ const getUser = async (token, params) => {
   }
 };
 
-const createUser = async (email, password) => {
+const createUser = async (token, data) => {
+  try {
+    const { message, status, tokenData } = validateToken(token);
+    if (!tokenData) return { message, status };
 
+    const { username, email, password } = data;
+
+    if (!username || !email || !password) return { message: 'missing params' , status: 400 }; // 400 -> Bad request
+
+    const hashedPassword = await generateHashPass(password); 
+
+    console.log(hashedPassword);
+
+    const [newUserId] = await knex('user').insert({ username, email, password_hash: hashedPassword });
+
+    return { status: 200, message: `user ${newUserId} created` };
+  } catch(err) {
+    console.error(err);
+    return { message: 'server error', status: 500 };      
+  }
 };
 
 module.exports = { login, getUser, createUser };

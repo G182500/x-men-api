@@ -20,6 +20,13 @@ const getUser = async (req, res) => {
   return res.status(status).json(data);
 };
 
-const createUser = async (req, res) => {};
+const createUser = async (req, res) => {
+  const token = req.header('Authorization');
+  
+  const { data, status, message } = await userService.createUser(token, req.body);
+  if (!data) return res.status(status).json({ message });
+
+  return res.status(status).json(data);
+};
 
 module.exports = { login, createUser, getUser };
