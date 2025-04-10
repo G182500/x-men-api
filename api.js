@@ -2,8 +2,17 @@ require('dotenv').config();
 
 const PORT = process.env.PORT;
 
+const cors = require('cors');
 const exp = require('express');
 const app = exp();
+
+/* Mesmo sendo localhost, são origens diferentes (:3000 !== :4200),
+Para proteger os dados o servidor trava as requests não confiaveis.*/
+app.use(cors({
+  origin: 'http://localhost:4200', // Angular’s frontend permission
+  methods: ['GET', 'POST', 'PUT'],
+  credentials: true,
+}));
 
 app.use(exp.json()); // access the body request
 
@@ -15,10 +24,6 @@ const { login, createUser, getUser } = require('./user/controller.js');
 const { getMutant, createMutant, updateMutant } = require('./mutant/controller.js');
 
 app.post('/login', login);
-
-/* Autenticação utilizando um Token JWT, que virá no cabeçalho das requisições.
-Este tipo de autenticação, é chamado de 'Bearer Authentication'. Enquanto JWT define o formato do Token, Bearer define como o Token é trafegado.
-Para utilizar este padrão, basta definir um item no cabeçalho da requisição, chamado de 'Authorization' e que contenha a string 'Bearer SEU_TOKEN' */
 
 app.get('/user', getUser);
 app.post('/user', createUser);
