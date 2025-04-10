@@ -17,7 +17,7 @@ const login = async (email, password) => {
     const passwordMatch = await checkPassword(password, user.password_hash);
     if (!passwordMatch) return { message: 'incorrect password', status: 401 }; // 401 -> Não autorizado
 
-    const token = generateToken({ email }, '1d', String(user.id));      
+    const token = generateToken({ email }, '1d', String(user.id)); 
     return { message: 'logged in', status: 200, data: { token, username: user.username, email } };
 
   } catch(err) {
@@ -31,7 +31,7 @@ const getUser = async (token, params) => {
     const { message, status, tokenData } = validateToken(token);
     if (!tokenData) return { message, status };
 
-    const query = knex('user').select('*');
+    const query = knex('user').select(['id', 'email', 'username']);
 
     if (params){
       const { id, name, email } = params;
