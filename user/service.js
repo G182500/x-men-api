@@ -18,7 +18,7 @@ const login = async (email, password) => {
     if (!passwordMatch) return { message: 'incorrect password', status: 401 }; // 401 -> Não autorizado
 
     const token = generateToken({ email }, '1d', String(user.id));      
-    return { message: 'logged in', status: 200, token };
+    return { message: 'logged in', status: 200, data: { token, username: user.username, email } };
 
   } catch(err) {
     console.error(err);
