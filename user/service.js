@@ -3,6 +3,18 @@ const { knex } = require('../utils/knex.js');
 const { checkPassword, generateHashPass } = require('../utils/bcrypt.js');
 const { generateToken, validateToken } = require('../utils/jwt.js');
 
+const checkToken = async (token) => {
+  try {
+    const { message, status, tokenData } = validateToken(token);
+    if (!tokenData) return { message, status };
+
+    return { status: 200, data: tokenData };
+  } catch (err) {
+    console.error(err);
+    return { message: 'server error', status: 500 };
+  }
+};
+
 const login = async (email, password) => {
   try {
     const query = knex('user')
@@ -17,12 +29,12 @@ const login = async (email, password) => {
     const passwordMatch = await checkPassword(password, user.password_hash);
     if (!passwordMatch) return { message: 'incorrect password', status: 401 }; // 401 -> Não autorizado
 
-    const token = generateToken({ email }, '1d', String(user.id)); 
+    const token = generateToken({ email }, '1d', String(user.id));
     return { message: 'logged in', status: 200, data: { token, username: user.username, email } };
 
-  } catch(err) {
+  } catch (err) {
     console.error(err);
-    return { message: 'server error', status: 500 };      
+    return { message: 'server error', status: 500 };
   }
 };
 
@@ -33,9 +45,9 @@ const getUser = async (token, params) => {
 
     const query = knex('user').select(['id', 'email', 'username']);
 
-    if (params){
+    if (params) {
       const { id, name, email } = params;
-      
+
       if (id) query.where({ id });
       if (name) query.andWhere('username', 'like', `%${name.toUpperCase()}%`);
       if (email) query.andWhere('email', 'like', `%${email}%`);
@@ -45,9 +57,9 @@ const getUser = async (token, params) => {
     if (!rows.length) return { status: 404, data: [] };
 
     return { status: 200, data: rows };
-  } catch(err) {
+  } catch (err) {
     console.error(err);
-    return { message: 'server error', status: 500 };      
+    return { message: 'server error', status: 500 };
   }
 };
 
@@ -58,17 +70,17 @@ const createUser = async (token, data) => {
 
     const { username, email, password } = data;
 
-    if (!username || !email || !password) return { message: 'missing params' , status: 400 }; // 400 -> Bad request
+    if (!username || !email || !password) return { message: 'missing params', status: 400 }; // 400 -> Bad request
 
     const hashedPassword = await generateHashPass(password);
 
     const [newUserId] = await knex('user').insert({ username, email, password_hash: hashedPassword });
 
     return { status: 200, message: `user ${newUserId} created` };
-  } catch(err) {
+  } catch (err) {
     console.error(err);
-    return { message: 'server error', status: 500 };      
+    return { message: 'server error', status: 500 };
   }
 };
 
-module.exports = { login, getUser, createUser };
+module.exports = { login, getUser, createUser, checkToken };

@@ -2,8 +2,6 @@
 # Container para o BD (3307:3306)
 # porta host : porta docker
 
-version: "3.8"
-
 services:
   db:
     image: mysql:latest
