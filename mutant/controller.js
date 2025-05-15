@@ -7,7 +7,7 @@ const getMutant = async (req, res) => {
   const { data, status, message } = await mutantService.getMutant(token, params);
   if (!data) return res.status(status).json({ message });
 
-  return res.status(status).json(data);
+  return res.status(status).json({ data: data });
 };
 
 const createMutant = async (req, res) => {
@@ -15,7 +15,7 @@ const createMutant = async (req, res) => {
   const newMutantData = req.body;
 
   const { status, message } = await mutantService.createMutant(token, newMutantData);
-  return res.status(status).json({ message }); 
+  return res.status(status).json({ message });
 };
 
 const updateMutant = async (req, res) => {
@@ -23,7 +23,7 @@ const updateMutant = async (req, res) => {
   const updatedData = req.body;
 
   const { status, message } = await mutantService.updateMutant(token, updatedData);
-  return res.status(status).json({ message }); 
+  return res.status(status).json({ message });
 };
 
 /*

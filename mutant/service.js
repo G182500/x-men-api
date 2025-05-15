@@ -7,7 +7,7 @@ const getMutant = async (token, params) => {
     if (!tokenData) return { message, status };
 
     const query = knex('mutant')
-      .select('mutant.id', 'mutant.name', knex.raw('JSON_ARRAYAGG(ability.name) as abilities'))
+      .select('mutant.id', 'mutant.name', 'mutant.side', 'mutant.category', knex.raw('JSON_ARRAYAGG(ability.name) as abilities'))
       .leftJoin('mutant_ability', 'mutant_ability.mutant_id', 'mutant.id')
       .leftJoin('ability', 'ability.id', 'mutant_ability.ability_id')
       .groupBy('mutant.id', 'mutant.name');
@@ -17,7 +17,7 @@ const getMutant = async (token, params) => {
 
       if (id) query.where({ id });
       if (name) query.andWhere('name', 'like', `%${name.toUpperCase()}%`);
-      if (category) query.andWhere('categort', 'like', `%${category}%`);
+      if (category) query.andWhere('category', 'like', `%${category.toUpperCase()}%`);
       if (side) query.andWhere({ side });
 
       let abilitiesArray = abilities ? abilities.split(',') : [];
@@ -32,12 +32,10 @@ const getMutant = async (token, params) => {
     }
 
     const rows = await query;
-    if (!rows.length) return { status: 404, data: [] };
-
     return { status: 200, data: rows };
-  } catch(err) {
+  } catch (err) {
     console.error(err);
-    return { message: 'server error', status: 500 };      
+    return { message: 'server error', status: 500 };
   }
 };
 
@@ -47,7 +45,7 @@ const createMutant = async (token, data) => {
     if (!tokenData) return { message, status };
 
     const { name, category, side, abilities } = data;
-    if (!name || !category || !side || !abilities?.length) return { message: 'missing params' , status: 400 }; // 400 -> Bad request
+    if (!name || !category || !side || !abilities?.length) return { message: 'missing params', status: 400 }; // 400 -> Bad request
 
     // transaction -> Se der erro no meio, ele desfaz tudo
     const id = await knex.transaction(async trx => {
@@ -64,9 +62,9 @@ const createMutant = async (token, data) => {
     });
 
     return { status: 200, message: `mutant ${id} created` };
-  } catch(err) {
+  } catch (err) {
     console.error(err);
-    return { message: 'server error', status: 500 };      
+    return { message: 'server error', status: 500 };
   }
 };
 
