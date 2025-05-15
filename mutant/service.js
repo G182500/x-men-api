@@ -31,7 +31,7 @@ const getMutant = async (token, params) => {
       }
     }
 
-    const rows = await query;
+    const rows = await query.orderBy("mutant.name");
     return { status: 200, data: rows };
   } catch (err) {
     console.error(err);
