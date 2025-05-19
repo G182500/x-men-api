@@ -16,8 +16,8 @@ const getMutant = async (token, params) => {
       const { id, name, category, side, abilities } = params;
 
       if (id) query.where({ id });
-      if (name) query.andWhere('name', 'like', `%${name.toUpperCase()}%`);
-      if (category) query.andWhere('category', 'like', `%${category.toUpperCase()}%`);
+      if (name) query.andWhere('mutant.name', 'like', `%${name.toUpperCase()}%`);
+      if (category) query.andWhere({ category });
       if (side) query.andWhere({ side });
 
       let abilitiesArray = abilities ? abilities.split(',') : [];
