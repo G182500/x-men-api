@@ -65,4 +65,4 @@ Com o container em execução, entre no MySQL com **docker exec -it nome-contain
 Para conectar o BD de um container em um **editor SQL**, como o DBeaver, podemos usar **localhost** e porta do host na conexão, ou IP e porta do container. Para a segunda opção, basta digitar **docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nome-container** e usar o IP retornado
 
 # 📥 Restaurar DUMP dentro do Container
-Se tiver um arquivo backup **.sql** e quiser restaurá-lo, use **docker cp caminho/do/seu/backup.sql nome-container:/backup.sql** para copiá-lo, depois entre no container (**docker exec -it synova-api-v3-database-1 bash**) e rode **mysql -u root -p nome-bd < /backup.sql**
+Se tiver um arquivo backup **.sql** e quiser restaurá-lo, use **docker cp caminho/do/seu/backup.sql nome-container:/backup.sql** para copiá-lo, depois entre no container (**docker exec -it nome-container bash**) e rode **mysql -u root -p nome-bd < /backup.sql**. Ou **docker exec -i nome-container mysql -u root -p12345678 nome_BD < ../dump.sql (caminho dump)**
